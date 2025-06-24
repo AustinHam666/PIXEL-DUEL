@@ -6,25 +6,33 @@ export default class Credits extends Phaser.Scene {
   create() {
     this.cameras.main.setBackgroundColor('#000');
 
-    this.add.text(400, 80, 'Credits', {
+    const centerX = this.cameras.main.centerX;
+    const startY = 100;
+    const spacing = 40;
+
+    // Título
+    this.add.text(centerX, startY, 'Credits', {
       fontFamily: '"Press Start 2P"',
       fontSize: '20px',
       fill: '#ffffff'
     }).setOrigin(0.5);
 
-    this.add.text(400, 200, 'Desarrollado por:', {
+    // Subtítulo
+    this.add.text(centerX, startY + spacing * 2, 'Desarrollado por:', {
       fontFamily: '"Press Start 2P"',
       fontSize: '10px',
       fill: '#ffffff'
     }).setOrigin(0.5);
 
-    this.add.text(400, 240, 'AUSTIN', {
+    // Nombre del desarrollador
+    this.add.text(centerX, startY + spacing * 2.8, 'AUSTIN HAM', {
       fontFamily: '"Press Start 2P"',
       fontSize: '12px',
-      fill: '#f0f'
+      fill: '#ff0000'
     }).setOrigin(0.5);
 
-    const backBtn = this.add.text(400, 400, 'Volver', {
+    // Botón "Volver"
+    const backBtn = this.add.text(centerX, startY + spacing * 5, 'Volver', {
       fontFamily: '"Press Start 2P"',
       fontSize: '12px',
       fill: '#ffffff'

@@ -6,25 +6,32 @@ export default class Settings extends Phaser.Scene {
   create() {
     this.cameras.main.setBackgroundColor('#000');
 
-    this.add.text(400, 80, 'Settings', {
+    const centerX = this.cameras.main.centerX;
+    const startY = 100;
+    const spacing = 60;
+
+    // Título
+    this.add.text(centerX, startY, 'Settings', {
       fontFamily: '"Press Start 2P"',
       fontSize: '20px',
       fill: '#ffffff'
     }).setOrigin(0.5);
 
-    this.add.text(400, 200, 'Volumen: [    ]', {
+    // Opciones
+    this.add.text(centerX, startY + spacing * 2, 'Volumen: [    ]', {
       fontFamily: '"Press Start 2P"',
       fontSize: '12px',
       fill: '#ffffff'
     }).setOrigin(0.5);
 
-    this.add.text(400, 260, 'Pantalla: [    ]', {
+    this.add.text(centerX, startY + spacing * 3, 'Pantalla: [    ]', {
       fontFamily: '"Press Start 2P"',
       fontSize: '12px',
       fill: '#ffffff'
     }).setOrigin(0.5);
 
-    const backBtn = this.add.text(400, 400, 'Volver', {
+    // Botón "Volver"
+    const backBtn = this.add.text(centerX, startY + spacing * 5, 'Volver', {
       fontFamily: '"Press Start 2P"',
       fontSize: '12px',
       fill: '#ffffff'

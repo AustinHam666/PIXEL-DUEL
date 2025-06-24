@@ -1,4 +1,4 @@
-export default class Mapa1 extends Phaser.Scene {
+export default class Mapa2 extends Phaser.Scene {
   constructor() {
     super("mapa1");
   }
@@ -12,17 +12,17 @@ export default class Mapa1 extends Phaser.Scene {
 
   preload() {
     this.load.image("new-texture", "public/assets/objetos/new-texture.png");
-    this.load.tilemapTiledJSON("mapa1", "public/assets/tilemap/mapa1.json");
+    this.load.tilemapTiledJSON("mapa2", "public/assets/tilemap/mapa2.json");
     this.load.image("naveazul", "public/assets/objetos/naveazul.png");
     this.load.image("naveroja", "public/assets/objetos/naveroja.png");
-    this.load.image("proyectil", "public/assets/objetos/proyectil.png");
+    //this.load.image("proyectil", "public/assets/objetos/proyectil.png");
   }
 
   create() {
     const { width } = this.sys.game.config;
 
     // Mapa sin desplazamiento
-    const map = this.make.tilemap({ key: "mapa1" });
+    const map = this.make.tilemap({ key: "mapa2" });
     const tileset = map.addTilesetImage("new-texture", "new-texture");
     map.createLayer("fondo", tileset, 0, 0);
     map.createLayer("plataforma", tileset, 0, 0);

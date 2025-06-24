@@ -1,47 +1,55 @@
-export default class Mapa1 extends Phaser.Scene {
+export default class Mapa3 extends Phaser.Scene {
   constructor() {
-    super("mapa1");
+    super("mapa3");
   }
 
   init() {
     this.tiempoRestante = 60;
     this.puntosRojo = 0;
     this.puntosAzul = 0;
-    this.hudAlto = 24; // Altura del HUD superior compacto
+    this.hudAlto = 24;
   }
 
   preload() {
     this.load.image("new-texture", "public/assets/objetos/new-texture.png");
-    this.load.tilemapTiledJSON("mapa1", "public/assets/tilemap/mapa1.json");
-    this.load.image("naveazul", "public/assets/objetos/naveazul.png");
-    this.load.image("naveroja", "public/assets/objetos/naveroja.png");
+    this.load.tilemapTiledJSON("mapa3", "public/assets/tilemap/mapa3.json");
+
+    this.load.image("naveRoja", "public/assets/objetos/naveroja.png");
+    this.load.image("naveAzul", "public/assets/objetos/naveazul.png");
     this.load.image("proyectil", "public/assets/objetos/proyectil.png");
   }
 
   create() {
     const { width } = this.sys.game.config;
+    this.cameras.main.setBackgroundColor("#000000");
 
-    // Mapa sin desplazamiento
-    const map = this.make.tilemap({ key: "mapa1" });
+    const map = this.make.tilemap({ key: "mapa3" });
     const tileset = map.addTilesetImage("new-texture", "new-texture");
-    map.createLayer("fondo", tileset, 0, 0);
-    map.createLayer("plataforma", tileset, 0, 0);
 
-    const objetos = map.getObjectLayer("objetos").objects;
+    const fondo = map.createLayer("fondo", tileset, 0, 0);
+    const plataforma = map.createLayer("plataforma", tileset, 0, 0);
+    plataforma.setCollisionByProperty({ collides: true });
+
+    const objetos = map.getObjectLayer("objetos")?.objects || [];
     const player1Spawn = objetos.find(obj => obj.name === "player1");
     const player2Spawn = objetos.find(obj => obj.name === "player2");
 
-    // Naves
-    this.naveRoja = this.physics.add.sprite(player1Spawn.x, player1Spawn.y, "naveroja");
-    this.naveAzul = this.physics.add.sprite(player2Spawn.x, player2Spawn.y, "naveazul");
+    if (!player1Spawn || !player2Spawn) {
+      console.warn("Faltan los objetos 'player1' o 'player2' en el mapa.");
+      return;
+    }
 
-    this.naveRoja.setData('direccion', 'right');
-    this.naveAzul.setData('direccion', 'left');
+    this.naveRoja = this.physics.add.sprite(player1Spawn.x, player1Spawn.y, "naveRoja")
+      .setCollideWorldBounds(true).setData("direccion", "right");
 
-    // Proyectiles
+    this.naveAzul = this.physics.add.sprite(player2Spawn.x, player2Spawn.y, "naveAzul")
+      .setCollideWorldBounds(true).setData("direccion", "left");
+
+    this.physics.add.collider(this.naveRoja, plataforma);
+    this.physics.add.collider(this.naveAzul, plataforma);
+
     this.proyectiles = this.physics.add.group();
 
-    // Controles
     this.cursors = this.input.keyboard.createCursorKeys();
     this.teclaEnter = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
     this.teclasWASD = this.input.keyboard.addKeys({
@@ -52,7 +60,7 @@ export default class Mapa1 extends Phaser.Scene {
       disparar: Phaser.Input.Keyboard.KeyCodes.SPACE,
     });
 
-    // HUD SUPERIOR COMPACTO
+    // HUD
     this.hudSuperior = this.add.rectangle(width / 2, 0, width, this.hudAlto, 0x000000, 0.6)
       .setOrigin(0.5, 0).setDepth(0.9);
 
@@ -74,7 +82,6 @@ export default class Mapa1 extends Phaser.Scene {
       fill: "#ff4444"
     }).setOrigin(1, 0).setDepth(1);
 
-    // Colisiones
     this.physics.add.overlap(this.proyectiles, this.naveAzul, (proyectil) => {
       if (proyectil.disparadoPor === "rojo") {
         this.puntosRojo++;
@@ -93,7 +100,6 @@ export default class Mapa1 extends Phaser.Scene {
       proyectil.destroy();
     });
 
-    // Temporizador
     this.time.addEvent({
       delay: 1000,
       callback: this.actualizarTemporizador,
@@ -105,50 +111,26 @@ export default class Mapa1 extends Phaser.Scene {
   update() {
     const velocidad = 200;
 
-    // Movimiento ROJA
+    // Nave Roja (Flechas)
     this.naveRoja.setVelocity(0);
-    if (this.cursors.left.isDown) {
-      this.naveRoja.setVelocityX(-velocidad);
-      this.naveRoja.setData('direccion', 'left');
-    }
-    if (this.cursors.right.isDown) {
-      this.naveRoja.setVelocityX(velocidad);
-      this.naveRoja.setData('direccion', 'right');
-    }
-    if (this.cursors.up.isDown) {
-      this.naveRoja.setVelocityY(-velocidad);
-      this.naveRoja.setData('direccion', 'up');
-    }
-    if (this.cursors.down.isDown) {
-      this.naveRoja.setVelocityY(velocidad);
-      this.naveRoja.setData('direccion', 'down');
-    }
+    if (this.cursors.left.isDown) this.naveRoja.setVelocityX(-velocidad).setData("direccion", "left");
+    if (this.cursors.right.isDown) this.naveRoja.setVelocityX(velocidad).setData("direccion", "right");
+    if (this.cursors.up.isDown) this.naveRoja.setVelocityY(-velocidad).setData("direccion", "up");
+    if (this.cursors.down.isDown) this.naveRoja.setVelocityY(velocidad).setData("direccion", "down");
 
     if (Phaser.Input.Keyboard.JustDown(this.teclaEnter)) {
-      this.dispararProyectil(this.naveRoja, this.naveRoja.getData('direccion'), 'rojo');
+      this.dispararProyectil(this.naveRoja, this.naveRoja.getData("direccion"), "rojo");
     }
 
-    // Movimiento AZUL
+    // Nave Azul (WASD)
     this.naveAzul.setVelocity(0);
-    if (this.teclasWASD.left.isDown) {
-      this.naveAzul.setVelocityX(-velocidad);
-      this.naveAzul.setData('direccion', 'left');
-    }
-    if (this.teclasWASD.right.isDown) {
-      this.naveAzul.setVelocityX(velocidad);
-      this.naveAzul.setData('direccion', 'right');
-    }
-    if (this.teclasWASD.up.isDown) {
-      this.naveAzul.setVelocityY(-velocidad);
-      this.naveAzul.setData('direccion', 'up');
-    }
-    if (this.teclasWASD.down.isDown) {
-      this.naveAzul.setVelocityY(velocidad);
-      this.naveAzul.setData('direccion', 'down');
-    }
+    if (this.teclasWASD.left.isDown) this.naveAzul.setVelocityX(-velocidad).setData("direccion", "left");
+    if (this.teclasWASD.right.isDown) this.naveAzul.setVelocityX(velocidad).setData("direccion", "right");
+    if (this.teclasWASD.up.isDown) this.naveAzul.setVelocityY(-velocidad).setData("direccion", "up");
+    if (this.teclasWASD.down.isDown) this.naveAzul.setVelocityY(velocidad).setData("direccion", "down");
 
     if (Phaser.Input.Keyboard.JustDown(this.teclasWASD.disparar)) {
-      this.dispararProyectil(this.naveAzul, this.naveAzul.getData('direccion'), 'azul');
+      this.dispararProyectil(this.naveAzul, this.naveAzul.getData("direccion"), "azul");
     }
   }
 
@@ -158,10 +140,10 @@ export default class Mapa1 extends Phaser.Scene {
 
     const velocidad = 300;
     switch (direccion) {
-      case 'left': proyectil.setVelocity(-velocidad, 0); break;
-      case 'right': proyectil.setVelocity(velocidad, 0); break;
-      case 'up': proyectil.setVelocity(0, -velocidad); break;
-      case 'down': proyectil.setVelocity(0, velocidad); break;
+      case "left": proyectil.setVelocity(-velocidad, 0); break;
+      case "right": proyectil.setVelocity(velocidad, 0); break;
+      case "up": proyectil.setVelocity(0, -velocidad); break;
+      case "down": proyectil.setVelocity(0, velocidad); break;
     }
   }
 
