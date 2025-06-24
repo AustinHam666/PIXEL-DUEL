@@ -15,7 +15,7 @@ export default class Mapa1 extends Phaser.Scene {
     this.load.tilemapTiledJSON("mapa1", "public/assets/tilemap/mapa1.json");
     this.load.image("naveazul", "public/assets/objetos/naveazul.png");
     this.load.image("naveroja", "public/assets/objetos/naveroja.png");
-    this.load.image("proyectil", "public/assets/objetos/proyectil.png");
+    //this.load.image("proyectil", "public/assets/objetos/proyectil.png");
   }
 
   create() {

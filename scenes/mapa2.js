@@ -1,6 +1,6 @@
 export default class Mapa2 extends Phaser.Scene {
   constructor() {
-    super("mapa1");
+    super("mapa2");
   }
 
   init() {
