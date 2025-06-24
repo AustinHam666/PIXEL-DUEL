@@ -94,7 +94,7 @@ export default class Menu extends Phaser.Scene {
       text.on('pointerdown', () => {
         switch (option) {
           case 'Play':
-            this.scene.start('mapa1');
+            this.scene.start('mapa');
             break;
           case 'Score':
             this.scene.start('score');

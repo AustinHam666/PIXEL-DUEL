@@ -1,18 +1,38 @@
-export default class Mapa4 extends Phaser.Scene {
+export default class Mapa extends Phaser.Scene {
   constructor() {
-    super("mapa4");
+    super("mapa");
+    this.mapas = ["mapa1","mapa2","mapa3","mapa4","mapa5"]
+    this.mapaActual = ""
   }
 
-  init() {
+  init(data) {
     this.tiempoRestante = 60;
     this.puntosRojo = 0;
     this.puntosAzul = 0;
     this.hudAlto = 24; // Altura del HUD superior compacto
+
+    this.mapasNoUsados = data.mapasNoUsados || this.mapas
+    this.mapasUsados = data.mapasUsados || []
+
+    // Deteriminar cuando ya recorrio todos
+    if (this.mapasNoUsados.length ===  0) {
+      this.scene.start("Final")
+      return;
+    }
+
+    // Buscar un mapa no usado
+    this.mapaActual = Phaser.Utils.Array.RemoveRandomElement(this.mapasNoUsados);
+    Phaser.Utils.Array.Add(this.mapasUsados, this.mapaActual); 
   }
 
   preload() {
     this.load.image("new-texture", "public/assets/objetos/new-texture.png");
-    this.load.tilemapTiledJSON("mapa4", "public/assets/tilemap/mapa4.json");
+    this.load.tilemapTiledJSON("mapa1", `public/assets/tilemap/mapa1.json`);
+    this.load.tilemapTiledJSON("mapa2", `public/assets/tilemap/mapa2.json`);
+    this.load.tilemapTiledJSON("mapa3", `public/assets/tilemap/mapa3.json`);
+    this.load.tilemapTiledJSON("mapa4", `public/assets/tilemap/mapa4.json`);
+    this.load.tilemapTiledJSON("mapa5", `public/assets/tilemap/mapa5.json`);
+
     this.load.image("naveazul", "public/assets/objetos/naveazul.png");
     this.load.image("naveroja", "public/assets/objetos/naveroja.png");
     //this.load.image("proyectil", "public/assets/objetos/proyectil.png");
@@ -22,10 +42,12 @@ export default class Mapa4 extends Phaser.Scene {
     const { width } = this.sys.game.config;
 
     // Mapa sin desplazamiento
-    const map = this.make.tilemap({ key: "mapa4" });
+    const map = this.make.tilemap({ key: this.mapaActual });
     const tileset = map.addTilesetImage("new-texture", "new-texture");
     map.createLayer("fondo", tileset, 0, 0);
-    map.createLayer("plataforma", tileset, 0, 0);
+    const platformLayer = map.createLayer("plataforma", tileset, 0, 0);
+
+    platformLayer.setCollisionByProperty({ colision: true });
 
     const objetos = map.getObjectLayer("objetos").objects;
     const player1Spawn = objetos.find(obj => obj.name === "player1");
@@ -41,6 +63,7 @@ export default class Mapa4 extends Phaser.Scene {
     // Proyectiles
     this.proyectiles = this.physics.add.group();
 
+
     // Controles
     this.cursors = this.input.keyboard.createCursorKeys();
     this.teclaEnter = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
@@ -51,6 +74,8 @@ export default class Mapa4 extends Phaser.Scene {
       right: Phaser.Input.Keyboard.KeyCodes.D,
       disparar: Phaser.Input.Keyboard.KeyCodes.SPACE,
     });
+
+    this.keyProximaEscena = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
     // HUD SUPERIOR COMPACTO
     this.hudSuperior = this.add.rectangle(width / 2, 0, width, this.hudAlto, 0x000000, 0.6)
@@ -100,6 +125,9 @@ export default class Mapa4 extends Phaser.Scene {
       callbackScope: this,
       loop: true,
     });
+
+    this.physics.add.collider(this.naveAzul, platformLayer);
+    this.physics.add.collider(this.naveRoja, platformLayer);
   }
 
   update() {
@@ -126,6 +154,10 @@ export default class Mapa4 extends Phaser.Scene {
 
     if (Phaser.Input.Keyboard.JustDown(this.teclaEnter)) {
       this.dispararProyectil(this.naveRoja, this.naveRoja.getData('direccion'), 'rojo');
+    }
+
+    if (Phaser.Input.Keyboard.JustDown(this.keyProximaEscena)) {
+      this.proximaEscena()
     }
 
     // Movimiento AZUL
@@ -185,5 +217,14 @@ export default class Mapa4 extends Phaser.Scene {
         fill: "#ff0000"
       }).setOrigin(0.5);
     }
+  }
+
+  proximaEscena() {
+    console.log("Proxima escena")
+    this.scene.start("mapa", {
+      mapasNoUsados : this.mapasNoUsados,
+      mapasUsados : this.mapasUsados
+    })
+
   }
 }
