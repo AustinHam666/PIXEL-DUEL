@@ -33,7 +33,7 @@ export default class Score extends Phaser.Scene {
       const nameText = this.add.text(width * 0.35, startY + i * spacing, entry.name, {
         fontFamily: '"Press Start 2P"',
         fontSize: '18px',
-        fill: '#ffcc00'
+        fill: '#ffffff'
       }).setOrigin(0.5);
 
       const scoreText = this.add.text(width * 0.65, startY + i * spacing, entry.score.toString(), {

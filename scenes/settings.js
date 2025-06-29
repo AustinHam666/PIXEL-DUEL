@@ -11,7 +11,7 @@ export default class Settings extends Phaser.Scene {
     const spacing = 60;
 
     // Título
-    this.add.text(centerX, startY, 'Settings', {
+    this.add.text(centerX, startY, 'Configuracion', {
       fontFamily: '"Press Start 2P"',
       fontSize: '20px',
       fill: '#ffffff'

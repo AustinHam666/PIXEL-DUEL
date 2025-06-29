@@ -16,8 +16,8 @@ const config = {
       height: 225, // Mantiene la relación 16:9 (400 ÷ 16 × 9 = 225)
     },
     max: {
-      width: window.innerWidth,
-      height: window.innerHeight,
+      width: 1500,
+      height: 1000,
     },
   },
   scene: [Menu, Mapa, Settings, Credits, Score],
@@ -27,6 +27,11 @@ const config = {
       debug: false,
     },
   },
+  render: {
+    pixelArt: true,
+    antialias: false,
+    roundPixels: true, // Asegura que los píxeles se representen correctamente
+  }
 };
 
 const game = new Phaser.Game(config);

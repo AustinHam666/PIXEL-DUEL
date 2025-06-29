@@ -11,7 +11,7 @@ export default class Credits extends Phaser.Scene {
     const spacing = 40;
 
     // Título
-    this.add.text(centerX, startY, 'Credits', {
+    this.add.text(centerX, startY, 'Creditos', {
       fontFamily: '"Press Start 2P"',
       fontSize: '20px',
       fill: '#ffffff'

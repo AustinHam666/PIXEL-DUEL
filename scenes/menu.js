@@ -6,8 +6,8 @@ export default class Menu extends Phaser.Scene {
   preload() {
     this.load.image('titulo', 'public/assets/objetos/titulo.png');
     this.load.image('pared', 'public/assets/objetos/pared.png');
-    this.load.image('naveRoja', 'public/assets/naves/nave_roja.png');
-    this.load.image('naveAzul', 'public/assets/naves/nave_azul.png');
+    this.load.image('naveRoja', 'public/assets/objetos/naveroja.png');
+    this.load.image('naveAzul', 'public/assets/objetos/naveazul.png');
   }
 
   create() {
@@ -26,8 +26,12 @@ export default class Menu extends Phaser.Scene {
       .setOrigin(0, 0)
       .setDepth(1);
 
-    // Título
-    const pixelText = this.add.text(width / 2, height * 0.18, 'PIXEL', {
+    // Título centrado
+    const titulo = this.add.image(width / 2, height * 0.1, 'titulo')
+      .setOrigin(0.5, 0.2) // Centra horizontalmente, arriba
+      .setDisplaySize(300, 100);
+
+   /* const pixelText = this.add.text(width / 2, height * 0.18, 'PIXEL', {
       fontFamily: '"Press Start 2P"',
       fontSize: '28px',
       fill: '#ff0000'
@@ -37,16 +41,17 @@ export default class Menu extends Phaser.Scene {
       fontFamily: '"Press Start 2P"',
       fontSize: '28px',
       fill: '#0000ff'
-    }).setOrigin(0.5);
+    }).setOrigin(0.5); */
 
     this.tweens.add({
-      targets: [pixelText, duelText],
+      targets: [titulo],
       alpha: { from: 1, to: 0.3 },
       duration: 300,
       yoyo: true,
       repeat: -1,
       ease: 'Sine.easeInOut'
     });
+    
 
     // Naves
     const naveWidth = 64;
@@ -77,7 +82,7 @@ export default class Menu extends Phaser.Scene {
     naveAzul.setMask(maskAzul);
 
     // Opciones del menú
-    const options = ['Play', 'Score', 'Settings', 'Credits', 'Exit'];
+    const options = ['Jugar', 'Puntuaciones', 'Configuracion', 'Créditos', 'Salir'];
     const spacing = 60;
     const startY = height * 0.38;
 
@@ -93,19 +98,19 @@ export default class Menu extends Phaser.Scene {
 
       text.on('pointerdown', () => {
         switch (option) {
-          case 'Play':
+          case 'Jugar':
             this.scene.start('mapa');
             break;
-          case 'Score':
+          case 'Puntuaciones':
             this.scene.start('score');
             break;
-          case 'Settings':
+          case 'Configuracion':
             this.scene.start('settings');
             break;
-          case 'Credits':
+          case 'Créditos':
             this.scene.start('credits');
             break;
-          case 'Exit':
+          case 'Salir':
             alert('Gracias por jugar Pixel Duel :)');
             break;
         }
