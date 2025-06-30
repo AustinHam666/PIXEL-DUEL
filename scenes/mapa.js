@@ -6,7 +6,7 @@ export default class Mapa extends Phaser.Scene {
   }
 
   init(data) {
-    this.tiempoRestante = 1;
+    this.tiempoRestante = 30;
     this.puntosRojo = typeof data.puntosRojo === "number" ? data.puntosRojo : 0;
     this.puntosAzul = typeof data.puntosAzul === "number" ? data.puntosAzul : 0;
     this.hudAlto = 16; // Altura del HUD superior aún más compacta
