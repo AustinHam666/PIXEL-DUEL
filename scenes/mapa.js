@@ -45,11 +45,9 @@ export default class Mapa extends Phaser.Scene {
     this.hudAlto = 16; // HUD más pequeño
     const hudOffsetY = this.hudAlto;
 
-    // Mapa sin desplazamiento, pero las capas y objetos se dibujan desplazados
+    // Mapa y plataformas desplazados hacia abajo por el HUD
     const map = this.make.tilemap({ key: this.mapaActual });
     const tileset = map.addTilesetImage("new-texture", "new-texture");
-    // Ajustar la altura del área jugable para que el mapa completo se vea debajo del HUD
-    const areaJugableAltura = height - this.hudAlto;
     map.createLayer("fondo", tileset, 0, hudOffsetY);
     const platformLayer = map.createLayer("plataforma", tileset, 0, hudOffsetY);
     platformLayer.setCollisionByProperty({ colision: true });
@@ -58,11 +56,11 @@ export default class Mapa extends Phaser.Scene {
     const player1Spawn = objetos.find(obj => obj.name === "player1");
     const player2Spawn = objetos.find(obj => obj.name === "player2");
 
-    // Spawns desplazados
+    // Spawns desplazados por el HUD
     this.spawnRojo = { x: player1Spawn.x, y: player1Spawn.y + hudOffsetY };
     this.spawnAzul = { x: player2Spawn.x, y: player2Spawn.y + hudOffsetY };
 
-    // Naves
+    // Naves en la posición desplazada
     this.naveRoja = this.physics.add.sprite(this.spawnRojo.x, this.spawnRojo.y, "naveroja");
     this.naveAzul = this.physics.add.sprite(this.spawnAzul.x, this.spawnAzul.y, "naveazul");
 
@@ -116,34 +114,34 @@ export default class Mapa extends Phaser.Scene {
 
     this.keyProximaEscena = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
-    // HUD SUPERIOR COMPACTO (totalmente fuera del área jugable)
+    // HUD en la parte superior, fijo
     this.hudSuperior = this.add.rectangle(width / 2, 0, width, this.hudAlto, 0x000000, 0.7)
-      .setOrigin(0.5, 0).setDepth(0.9);
+      .setOrigin(0.5, 0).setDepth(0.9).setScrollFactor(0);
     this.textoTemporizador = this.add.text(width / 2, 2, this.tiempoRestante.toString(), {
       fontFamily: '"Press Start 2P"',
       fontSize: "10px",
       fill: "#ffffff"
-    }).setOrigin(0.5, 0).setDepth(1);
+    }).setOrigin(0.5, 0).setDepth(1).setScrollFactor(0);
     this.textoPuntosAzul = this.add.text(4, 2, this.puntosAzul, {
       fontFamily: '"Press Start 2P"',
       fontSize: "10px",
       fill: "#44ccff"
-    }).setOrigin(0, 0).setDepth(1);
+    }).setOrigin(0, 0).setDepth(1).setScrollFactor(0);
     this.textoPuntosRojo = this.add.text(width - 4, 2, this.puntosRojo, {
       fontFamily: '"Press Start 2P"',
       fontSize: "10px",
       fill: "#ff4444"
-    }).setOrigin(1, 0).setDepth(1);
+    }).setOrigin(1, 0).setDepth(1).setScrollFactor(0);
     this.indicadorRecargaRojo = this.add.text(width - 28, 2, '', {
       fontFamily: '"Press Start 2P"',
       fontSize: '12px',
       fill: '#ff4444'
-    }).setOrigin(1, 0).setDepth(2);
+    }).setOrigin(1, 0).setDepth(2).setScrollFactor(0);
     this.indicadorRecargaAzul = this.add.text(28, 2, '', {
       fontFamily: '"Press Start 2P"',
       fontSize: '12px',
       fill: '#44ccff'
-    }).setOrigin(0, 0).setDepth(2);
+    }).setOrigin(0, 0).setDepth(2).setScrollFactor(0);
 
     // Temporizador
     this.time.addEvent({
