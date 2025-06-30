@@ -36,6 +36,7 @@ export default class Mapa extends Phaser.Scene {
     this.load.tilemapTiledJSON("mapa4", `public/assets/tilemap/mapa4.json`);
     this.load.tilemapTiledJSON("mapa5", `public/assets/tilemap/mapa5.json`);
 
+
     this.load.image("naveazul", "public/assets/objetos/naveazul.png");
     this.load.image("naveroja", "public/assets/objetos/naveroja.png");
     this.load.image("balasazules", "public/assets/objetos/balasazules.png");
@@ -114,7 +115,7 @@ export default class Mapa extends Phaser.Scene {
     });
     this.teclaJ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.J);
 
-    //this.keyProximaEscena = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
+    this.keyProximaEscena = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
     // HUD en la parte superior, fijo
     this.hudSuperior = this.add.rectangle(width / 2, 0, width, this.hudAlto, 0x000000, 0.7)
