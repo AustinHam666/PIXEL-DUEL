@@ -7,6 +7,7 @@ export default class Mapa extends Phaser.Scene {
 
   init(data) {
     this.tiempoRestante = 30;
+    this.index=0;
     this.puntosRojo = typeof data.puntosRojo === "number" ? data.puntosRojo : 0;
     this.puntosAzul = typeof data.puntosAzul === "number" ? data.puntosAzul : 0;
     this.hudAlto = 16; // Altura del HUD superior aún más compacta
@@ -226,7 +227,7 @@ export default class Mapa extends Phaser.Scene {
       }
     }
 
-    if (this.finished && Phaser.Input.Keyboard.JustDown(this.teclaJ)) {
+    if (this.finished && Phaser.Input.Keyboard.JustDown(this.teclaJ)&& this.index !== 4) {
       this.proximaEscena();
       this.finished = false;
     }
@@ -321,6 +322,9 @@ export default class Mapa extends Phaser.Scene {
     this.tiempoRestante--;
     this.textoTemporizador.setText(this.tiempoRestante.toString());
 
+    this.index = this.mapasUsados.indexOf(this.mapaActual);
+    console.log("index del mapa actual:", this.index);
+
     if (this.tiempoRestante <= 0) {
       this.finished = true;
       this.pausaJuego();
@@ -328,7 +332,9 @@ export default class Mapa extends Phaser.Scene {
   }
 
   pausaJuego() {
+    console.log("Juego pausado");
     this.finished = true;
+
 
     this.naveAzul.setVelocity(0);
     this.naveRoja.setVelocity(0);
@@ -351,11 +357,12 @@ export default class Mapa extends Phaser.Scene {
       1
     ).setOrigin(0.5);
 
-    // Texto arriba centrado
-    this.add.text(this.cameras.main.centerX, this.cameras.main.height * 0.18, "PRESS J TO CONTINUE", {
-      fontFamily: '"Press Start 2P"',
-      fontSize: "20px",
-      fill: "#ff0000"
+    if (this.index !== 4) {
+      // Texto arriba centrado
+      this.add.text(this.cameras.main.centerX, this.cameras.main.height * 0.18, "PRESS J TO CONTINUE", {
+        fontFamily: '"Press Start 2P"',
+        fontSize: "20px",
+        fill: "#ff0000"
     }).setOrigin(0.5).setDepth(1);
 
     // Puntaje azul a la izquierda
@@ -377,15 +384,19 @@ export default class Mapa extends Phaser.Scene {
       fontFamily: '"Press Start 2P"',
       fontSize: "32px",
       fill: "#ffffff"
-    }).setOrigin(0.5).setDepth(1);
+    }).setOrigin(0.5).setDepth(1); 
+  } else {
+    this.mostrarMenuFinal();
   }
-
+}
   proximaEscena() {
     // Si ya se usaron todos los mapas, mostrar menú de opciones finales
-    if (this.mapasUsados.length === 5) {
+    /*if (this.mapasUsados.length === 5) {
+      this.pantallaFinalNext = true;
+      console.log("Todos los mapas recorridos, mostrando menú final");
       this.mostrarMenuFinal();
       return;
-    }
+    }*/
 
     // Volver a mostrar los puntajes pequeños, el temporizador y los indicadores de recarga al reanudar el juego
     this.textoPuntosAzul.setVisible(true);

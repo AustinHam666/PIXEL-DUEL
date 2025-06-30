@@ -8,11 +8,15 @@ export default class Menu extends Phaser.Scene {
     this.load.image('pared', 'public/assets/objetos/pared.png');
     this.load.image('naveRoja', 'public/assets/objetos/naveroja.png');
     this.load.image('naveAzul', 'public/assets/objetos/naveazul.png');
+    this.load.audio('musica', 'public/assets/objetos/audio.wav');
   }
 
   create() {
     const { width, height } = this.sys.game.config;
     const paredHeight = 16;
+    
+    this.musica = this.sound.add('musica', { loop: true, volume: 0.5 });
+    this.musica.play();
 
     // Fondo negro
     this.add.rectangle(width / 2, height / 2, width, height, 0x000000);
@@ -46,7 +50,7 @@ export default class Menu extends Phaser.Scene {
     this.tweens.add({
       targets: [titulo],
       alpha: { from: 1, to: 0.3 },
-      duration: 300,
+      duration: 1200,
       yoyo: true,
       repeat: -1,
       ease: 'Sine.easeInOut'

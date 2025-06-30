@@ -21,15 +21,33 @@ export default class Credits extends Phaser.Scene {
     this.add.text(centerX, startY + spacing * 2, 'Desarrollado por:', {
       fontFamily: '"Press Start 2P"',
       fontSize: '10px',
-      fill: '#ffffff'
+      fill: '#cc44ff' // Cambiado a violeta del menú
     }).setOrigin(0.5);
 
     // Nombre del desarrollador
     this.add.text(centerX, startY + spacing * 2.8, 'AUSTIN HAM', {
       fontFamily: '"Press Start 2P"',
       fontSize: '12px',
-      fill: '#ff0000'
+      fill: '#cc44ff'
     }).setOrigin(0.5);
+
+this.add.text(centerX, startY + spacing * 3.6, 'Audio por freesound.org:', {
+  fontFamily: '"Press Start 2P"',
+  fontSize: '10px',
+  fill: '#cccccc'
+}).setOrigin(0.5);
+
+this.add.text(centerX, startY + spacing * 4.1, 'Mars army by szegvari', {
+  fontFamily: '"Press Start 2P"',
+  fontSize: '10px',
+  fill: '#cccccc'
+}).setOrigin(0.5);
+
+this.add.text(centerX, startY + spacing * 4.4, 'https://freesound.org/s/560746/', {
+  fontFamily: '"Press Start 2P"',
+  fontSize: '10px',
+  fill: '#cccccc'
+}).setOrigin(0.5);
 
     // Botón "Volver"
     const backBtn = this.add.text(centerX, startY + spacing * 5, 'Volver', {
