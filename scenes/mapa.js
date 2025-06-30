@@ -1,8 +1,8 @@
 export default class Mapa extends Phaser.Scene {
   constructor() {
     super("mapa");
-    this.mapas = ["mapa1","mapa2","mapa3","mapa4","mapa5"]
-    this.mapaActual = ""
+    this.mapas = ["mapa1", "mapa2", "mapa3", "mapa4", "mapa5"];
+    this.mapaActual = "";
   }
 
   init(data) {
@@ -12,18 +12,19 @@ export default class Mapa extends Phaser.Scene {
     this.hudAlto = 16; // Altura del HUD superior aún más compacta
     this.finished = false;
 
-    this.mapasNoUsados = data.mapasNoUsados || this.mapas
-    this.mapasUsados = data.mapasUsados || []
+    this.mapasNoUsados = data.mapasNoUsados || this.mapas;
+    this.mapasUsados = data.mapasUsados || [];
 
-    // Deteriminar cuando ya recorrio todos
-    if (this.mapasNoUsados.length ===  0) {
-      this.scene.start("Final")
+    // Determinar cuando ya recorrió todos
+    if (this.mapasNoUsados.length === 0) {
+      this.finished = true;
+      this.mostrarMenuFinal();
       return;
     }
 
     // Buscar un mapa no usado
     this.mapaActual = Phaser.Utils.Array.RemoveRandomElement(this.mapasNoUsados);
-    Phaser.Utils.Array.Add(this.mapasUsados, this.mapaActual); 
+    Phaser.Utils.Array.Add(this.mapasUsados, this.mapaActual);
   }
 
   preload() {
@@ -41,6 +42,8 @@ export default class Mapa extends Phaser.Scene {
   }
 
   create() {
+    if (this.finished) return; // Si ya terminó, no crear el mapa
+
     const { width, height } = this.sys.game.config;
     this.hudAlto = 16; // HUD más pequeño
     const hudOffsetY = this.hudAlto;
@@ -75,28 +78,26 @@ export default class Mapa extends Phaser.Scene {
     this.proyectiles = this.physics.add.group();
 
     // Balas
-    this.balasAzules = this.physics.add.group(); 
-    this.balasRojas = this.physics.add.group(); 
+    this.balasAzules = this.physics.add.group();
+    this.balasRojas = this.physics.add.group();
 
-    // Collider de balas AZULES con plataformas ULTRA GOD
+    // Collider de balas AZULES con plataformas
     this.physics.add.collider(this.balasAzules, platformLayer, (bala) => {
       bala.destroy();
     });
 
-    // Collider de balas ROJAS con plataformas ULTRA GOD
+    // Collider de balas ROJAS con plataformas
     this.physics.add.collider(this.balasRojas, platformLayer, (bala) => {
       bala.destroy();
     });
 
     // Collider de balas ROJAS con nave azul
     this.physics.add.overlap(this.balasRojas, this.naveAzul, (bala, nave) => {
-      console.log("Bala colisiona con nave azul");
       this.resetGame(this.naveAzul);
     });
 
     // Collider de balas AZULES con nave roja
     this.physics.add.overlap(this.balasAzules, this.naveRoja, (bala, nave) => {
-      console.log("Bala colisiona con nave roja");
       this.resetGame(this.naveRoja);
     });
 
@@ -163,7 +164,7 @@ export default class Mapa extends Phaser.Scene {
 
   update() {
     const velocidad = 200;
-  
+
     // EJECUTAR SIEMPRE Y CUANDO NO HAYA TERMINADO EL NIVEL
     if (!this.finished) {
       // Movimiento ROJA
@@ -194,7 +195,7 @@ export default class Mapa extends Phaser.Scene {
       }
 
       if (Phaser.Input.Keyboard.JustDown(this.keyProximaEscena)) {
-        this.proximaEscena()
+        this.proximaEscena();
       }
 
       // Movimiento AZUL
@@ -226,11 +227,11 @@ export default class Mapa extends Phaser.Scene {
     }
 
     if (this.finished && Phaser.Input.Keyboard.JustDown(this.teclaJ)) {
-      console.log("Tecla J presionada, proxima escena");
       this.proximaEscena();
       this.finished = false;
     }
   }
+
   resetGame(nave) {
     this.balasAzules.clear(true, true);
     this.balasRojas.clear(true, true);
@@ -322,7 +323,6 @@ export default class Mapa extends Phaser.Scene {
 
     if (this.tiempoRestante <= 0) {
       this.finished = true;
-      console.log(this.finished);
       this.pausaJuego();
     }
   }
@@ -381,22 +381,143 @@ export default class Mapa extends Phaser.Scene {
   }
 
   proximaEscena() {
+    // Si ya se usaron todos los mapas, mostrar menú de opciones finales
+    if (this.mapasUsados.length === 5) {
+      this.mostrarMenuFinal();
+      return;
+    }
+
     // Volver a mostrar los puntajes pequeños, el temporizador y los indicadores de recarga al reanudar el juego
     this.textoPuntosAzul.setVisible(true);
     this.textoPuntosRojo.setVisible(true);
     this.textoTemporizador.setVisible(true);
     this.indicadorRecargaRojo.setVisible(true);
     this.indicadorRecargaAzul.setVisible(true);
-    console.log("Proxima escena")
-    if (this.mapasUsados.length === 5) {
-      console.log("Todos los mapas usados, finalizando juego");
-      this.reiniciarJuego();
-    }
+
     this.scene.start("mapa", {
-      mapasNoUsados : this.mapasNoUsados,
-      mapasUsados : this.mapasUsados,
-      puntosRojo : this.puntosRojo,
-      puntosAzul : this.puntosAzul,
-    })
+      mapasNoUsados: this.mapasNoUsados,
+      mapasUsados: this.mapasUsados,
+      puntosRojo: this.puntosRojo,
+      puntosAzul: this.puntosAzul,
+    });
   }
+
+mostrarMenuFinal() {
+  // Ocultar HUD superior
+  this.textoPuntosAzul.setVisible(false);
+  this.textoPuntosRojo.setVisible(false);
+  this.textoTemporizador.setVisible(false);
+  this.indicadorRecargaRojo.setVisible(false);
+  this.indicadorRecargaAzul.setVisible(false);
+  if (this.hudSuperior) this.hudSuperior.setVisible(false);
+
+  // Fondo negro
+  this.add.rectangle(
+    this.cameras.main.centerX,
+    this.cameras.main.centerY,
+    this.cameras.main.width,
+    this.cameras.main.height,
+    0x000000,
+    1
+  ).setOrigin(0.5);
+
+  // Título
+  this.add.text(this.cameras.main.centerX, this.cameras.main.height * 0.18, "¡FIN DE MAPAS!", {
+    fontFamily: '"Press Start 2P"',
+    fontSize: "22px",
+    fill: "#ffffff"
+  }).setOrigin(0.5);
+
+  // Puntajes
+  this.add.text(this.cameras.main.centerX - 120, this.cameras.main.centerY, this.puntosAzul.toString(), {
+    fontFamily: '"Press Start 2P"',
+    fontSize: "32px",
+    fill: "#44ccff"
+  }).setOrigin(0.5).setDepth(1);
+
+  this.add.text(this.cameras.main.centerX + 120, this.cameras.main.centerY, this.puntosRojo.toString(), {
+    fontFamily: '"Press Start 2P"',
+    fontSize: "32px",
+    fill: "#ff4444"
+  }).setOrigin(0.5).setDepth(1);
+
+  this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, "-", {
+    fontFamily: '"Press Start 2P"',
+    fontSize: "32px",
+    fill: "#ffffff"
+  }).setOrigin(0.5).setDepth(1);
+
+  // Opciones
+  const opciones = [
+    "Seguir jugando (mantener puntaje)",
+    "Comenzar desde cero",
+    "Volver al menú"
+  ];
+  this.opcionSeleccionada = 0;
+  this.textosOpciones = [];
+
+  opciones.forEach((texto, i) => {
+    const color = i === this.opcionSeleccionada ? "#cc44ff" : "#ffffff";
+    const txt = this.add.text(
+      this.cameras.main.centerX,
+      this.cameras.main.centerY + 60 + i * 40,
+      texto,
+      {
+        fontFamily: '"Press Start 2P"',
+        fontSize: "16px",
+        fill: color
+      }
+    ).setOrigin(0.5).setInteractive({ useHandCursor: true });
+
+    txt.on('pointerover', () => {
+      this.textosOpciones[this.opcionSeleccionada].setFill("#ffffff");
+      this.opcionSeleccionada = i;
+      txt.setFill("#cc44ff");
+    });
+
+    txt.on('pointerout', () => {
+      txt.setFill("#ffffff");
+    });
+
+    txt.on('pointerdown', () => {
+      this.opcionSeleccionada = i;
+      this.elegirOpcionFinal();
+    });
+
+    this.textosOpciones.push(txt);
+  });
+
+  // Input para seleccionar opción con teclado
+  this.input.keyboard.on("keydown-UP", () => this.cambiarOpcionFinal(-1));
+  this.input.keyboard.on("keydown-DOWN", () => this.cambiarOpcionFinal(1));
+  this.input.keyboard.on("keydown-ENTER", () => this.elegirOpcionFinal());
 }
+  cambiarOpcionFinal(direccion) {
+    this.textosOpciones[this.opcionSeleccionada].setFill("#ffffff");
+    this.opcionSeleccionada = Phaser.Math.Wrap(this.opcionSeleccionada + direccion, 0, this.textosOpciones.length);
+    this.textosOpciones[this.opcionSeleccionada].setFill("#cc44ff");
+  }
+
+  elegirOpcionFinal() {
+    if (this.opcionSeleccionada === 0) {
+      // Seguir jugando con puntaje actual
+      this.scene.start("mapa", {
+        mapasNoUsados: ["mapa1", "mapa2", "mapa3", "mapa4", "mapa5"],
+        mapasUsados: [],
+        puntosRojo: this.puntosRojo,
+        puntosAzul: this.puntosAzul,
+      });
+    } else if (this.opcionSeleccionada === 1) {
+      // Comenzar desde cero
+      this.scene.start("mapa", {
+        mapasNoUsados: ["mapa1", "mapa2", "mapa3", "mapa4", "mapa5"],
+        mapasUsados: [],
+        puntosRojo: 0,
+        puntosAzul: 0,
+      });
+    } else if (this.opcionSeleccionada === 2) {
+      // Volver al menú
+      this.scene.start("menu");
+    }
+    }
+  }

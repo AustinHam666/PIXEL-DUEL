@@ -3,11 +3,6 @@ export default class Score extends Phaser.Scene {
     super('score');
   }
 
-  init(data) {
-    // Recibimos los puntajes desde otra escena (si hay)
-    this.scores = data.scores || [];
-  }
-
   create() {
     const { width, height } = this.sys.game.config;
 
@@ -15,32 +10,35 @@ export default class Score extends Phaser.Scene {
     this.add.rectangle(width / 2, height / 2, width, height, 0x000000);
 
     // Título
-    this.add.text(width / 2, height * 0.1, 'MEJORES PUNTAJES', {
+    this.add.text(width / 2, height * 0.1, 'CONTROLES', {
       fontFamily: '"Press Start 2P"',
       fontSize: '20px',
       fill: '#ffffff'
     }).setOrigin(0.5);
 
-    // Asegurar al menos 5 entradas con "AAA" y 0 si faltan
-    const defaultEntries = Array.from({ length: 5 }, (_, i) => ({ name: 'AAA', score: 0 }));
-    const displayScores = [...this.scores, ...defaultEntries].slice(0, 5);
+    const controles = [
+      { label: 'Jugador 1 (Rojo)', color: '#ff4444', y: height * 0.22 },
+      { label: 'Mover: Flechas ← ↑ ↓ →', color: '#ffffff', y: height * 0.27 },
+      { label: 'Disparar: ENTER', color: '#ffffff', y: height * 0.32 },
+      { label: '', color: '#ffffff', y: height * 0.36 },
+      { label: 'Jugador 2 (Azul)', color: '#44ccff', y: height * 0.41 },
+      { label: 'Mover: W A S D', color: '#ffffff', y: height * 0.46 },
+      { label: 'Disparar: ESPACIO', color: '#ffffff', y: height * 0.51 },
+      { label: '', color: '#ffffff', y: height * 0.55 },
+      { label: 'Controles de menú', color: '#cc44ff', y: height * 0.60 },
+      { label: 'Seleccionar: ENTER o clic', color: '#ffffff', y: height * 0.65 },
+      { label: 'Arriba/Abajo: ↑ ↓ o mouse', color: '#ffffff', y: height * 0.70 },
+      { label: 'Volver: clic en "Volver"', color: '#ffffff', y: height * 0.75 }
+    ];
 
-    // Mostrar tabla
-    const startY = height * 0.25;
-    const spacing = 50;
-
-    displayScores.forEach((entry, i) => {
-      const nameText = this.add.text(width * 0.35, startY + i * spacing, entry.name, {
-        fontFamily: '"Press Start 2P"',
-        fontSize: '18px',
-        fill: '#ffffff'
-      }).setOrigin(0.5);
-
-      const scoreText = this.add.text(width * 0.65, startY + i * spacing, entry.score.toString(), {
-        fontFamily: '"Press Start 2P"',
-        fontSize: '18px',
-        fill: '#ffffff'
-      }).setOrigin(0.5);
+    controles.forEach(ctrl => {
+      if (ctrl.label) {
+        this.add.text(width / 2, ctrl.y, ctrl.label, {
+          fontFamily: '"Press Start 2P"',
+          fontSize: '16px',
+          fill: ctrl.color
+        }).setOrigin(0.5);
+      }
     });
 
     // Instrucción para volver

@@ -82,7 +82,7 @@ export default class Menu extends Phaser.Scene {
     naveAzul.setMask(maskAzul);
 
     // Opciones del menú
-    const options = ['Jugar', 'Puntuaciones', 'Configuracion', 'Créditos', 'Salir'];
+    const options = ['Jugar', 'Controles', 'Configuracion', 'Créditos', 'Salir'];
     const spacing = 60;
     const startY = height * 0.38;
 
@@ -101,7 +101,7 @@ export default class Menu extends Phaser.Scene {
           case 'Jugar':
             this.scene.start('mapa');
             break;
-          case 'Puntuaciones':
+          case 'Controles':
             this.scene.start('score');
             break;
           case 'Configuracion':
