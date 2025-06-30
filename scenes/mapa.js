@@ -360,7 +360,7 @@ export default class Mapa extends Phaser.Scene {
 
     if (this.index !== 4) {
       // Texto arriba centrado
-      this.add.text(this.cameras.main.centerX, this.cameras.main.height * 0.18, "PRESS J TO CONTINUE", {
+      this.add.text(this.cameras.main.centerX, this.cameras.main.height * 0.18, "PRESIONAR J PARA CONTINUAR", {
         fontFamily: '"Press Start 2P"',
         fontSize: "20px",
         fill: "#ff0000"

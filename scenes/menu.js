@@ -15,8 +15,13 @@ export default class Menu extends Phaser.Scene {
     const { width, height } = this.sys.game.config;
     const paredHeight = 16;
     
-    this.musica = this.sound.add('musica', { loop: true, volume: 0.5 });
-    this.musica.play();
+      if (!this.sys.game.musicaFondo) {
+    this.sys.game.musicaFondo = this.sound.add('musica', {
+      loop: true,
+      volume: 0.5
+    });
+    this.sys.game.musicaFondo.play();
+  }
 
     // Fondo negro
     this.add.rectangle(width / 2, height / 2, width, height, 0x000000);
